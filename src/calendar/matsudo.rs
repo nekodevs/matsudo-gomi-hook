@@ -14,6 +14,7 @@ macro_rules! matsudo_rules {
             $recycle_plastic: path,
             $other_plastic: path
         )),*
+        $(,)?
     ) => {
         match ($current_base) {
             $(
@@ -61,7 +62,7 @@ impl Calendar for Matsudo {
             (Wed, (Tue, Thu, Sat), (3, Thu), Fri, Mon),
             (Thu, (Mon, Wed, Fri), (3, Wed), Sat, Tue),
             (Fri, (Tue, Thu, Sat), (4, Thu), Mon, Wed),
-            (Sat, (Mon, Wed, Fri), (4, Wed), Tue, Thu)
+            (Sat, (Mon, Wed, Fri), (4, Wed), Tue, Thu),
         )
     }
 }
