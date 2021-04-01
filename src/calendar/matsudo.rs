@@ -3,19 +3,22 @@ use crate::gomi::Gomi;
 
 use chrono::{DateTime, Datelike, Local, Weekday, Weekday::*};
 
+// Defines the gomi rules for Matsudo using a macro.
 macro_rules! matsudo_rules {
     (
         $current_base: expr,
         $current_time: expr,
+        // This repetition represents each rules based on the base day.
         $((
             $base: path,
             ($burnable1: path, $burnable2: path, $burnable3: path),
-            ($glass_week_num: expr, $glass_week_day: path),
+            ($glass_week_num: expr, $glass_week_day: path),  // The Nth day of X
             $recycle_plastic: path,
             $other_plastic: path
         )),*
         $(,)?
     ) => {
+        // Matches the current base day for the location.
         match ($current_base) {
             $(
                 $base => (vec![
@@ -32,11 +35,13 @@ macro_rules! matsudo_rules {
                         None
                     }
                 ]
+                    // Converts Vec<Option<Gomi>> to Vec<Gomi>, remaining only Some elements.
                     .into_iter()
                     .flat_map(|x| x)
                     .collect()
                 )
             ),*,
+            // Ignores the unknown base day, returning an empty Vec.
             _ => vec![],
         }
     }
@@ -54,6 +59,7 @@ impl Matsudo {
 
 impl Calendar for Matsudo {
     fn gomi_at(&self, time: DateTime<Local>) -> Vec<Gomi> {
+        // Using the defined rules, determines which Gomi's are available to take out.
         matsudo_rules!(
             self.base,
             time,
